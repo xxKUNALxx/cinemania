@@ -263,6 +263,7 @@ body {
 
 }
 
+
 .poster-box,
 .video-card{
   background-repeat: no-repeat;
@@ -612,7 +613,9 @@ padding-inline: 36px;
   margin-block-end: 16px;
 }
 
-
+.slider-control .slider-item:hover {
+  transform: scale(1.05); /* Zoom in effect */
+}
 
 .banner .genre{
   margin-block: 12px;

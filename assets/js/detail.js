@@ -63,6 +63,7 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
         videos: { results: videos }
     } = movie;
 
+    
     document.title = `${title} - Kineflix`;
 
     const movieDetail =document.createElement("div");
@@ -124,15 +125,18 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
         </div>
 
         <div class="title-wrapper">
-            <h3 class="title-large">Trailers and Clips</h3>
+            <h3 class="title-large">Trailers, Clips and Images</h3>
         </div>
 
         <div class="slider-list">
             <div class="slider-inner">
             </div>
         </div>
-
     </div>
+    
+    
+
+
     `;
 
     for (const {key, name} of filterVideos(videos)){
@@ -146,15 +150,42 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
 
         movieDetail.querySelector(".slider-inner").appendChild(videoCard);
 
-
-
     }
+       
+    fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${api_key}`, function(movie){
+
+            const {
+    
+                backdrops
+    
+            } = movie;
+    
+            backdrops.forEach(element => {
+                const videoCard = document.createElement("div");
+                videoCard.classList.add("video-card");
+                videoCard.innerHTML = `<img width="500" height="294" class="img-cover" " src="https://image.tmdb.org/t/p/w342/${element.file_path}" alt="">
+                `;
+              
+
+                movieDetail.querySelector(".slider-inner").appendChild(videoCard);
+                console.log(element.file_path);
+
+            });
+        
+        })  
+
+        
 
     pageContent.appendChild(movieDetail);
 
     fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${api_key}&page=1`,addSuggestedMovies);
 
 });
+
+
+
+
+
 
 const addSuggestedMovies = function({results: movieList}, title){
     const movieListElem = document.createElement("section");
