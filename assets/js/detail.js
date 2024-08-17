@@ -45,6 +45,9 @@ const filterVideos = function(videoList){
 
 }
 
+const watchNow = function() {
+    
+}
 
 
 fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}&append_to_response=casts,videos,images,releases`, function (movie){
@@ -123,6 +126,8 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
 
 
         </div>
+        <a href="https://vidsrc.xyz/embed/movie/${movieId}" target="_blank">
+        <button class="play_button" ">Watch Now</button><a/>
 
         <div class="title-wrapper">
             <h3 class="title-large">Trailers, Clips and Images</h3>
