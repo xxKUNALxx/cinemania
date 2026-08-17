@@ -126,7 +126,7 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
 
 
         </div>
-        <a href="https://vidsrc.xyz/embed/movie/${movieId}" target="_blank">
+        <a href="https://vidsrc.sbs/embed/movie/${movieId}" target="_blank">
         <button class="play_button" ">Watch Now</button><a/>
 
         <div class="title-wrapper">
