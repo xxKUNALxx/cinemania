@@ -1,0 +1,8 @@
+{
+  "name": "cinemania",
+  "version": "1.0.0",
+  "description": "Cinemania movie and web series streaming site",
+  "engines": {
+    "node": "22.x"
+  }
+}
