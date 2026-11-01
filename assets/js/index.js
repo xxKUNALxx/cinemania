@@ -5,6 +5,7 @@
 import { sidebar } from "./sidebar.js";
 import { api_key, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard } from "./movie-card.js";
+import { createSeriesCard } from "./series-card.js";
 import { search } from "./search.js";
 
 const pageContent = document.querySelector("[page-content]");
@@ -12,7 +13,7 @@ const pageContent = document.querySelector("[page-content]");
 sidebar();
 
 
-// home page sections (top rated, upcomings, trending movies)
+// home page sections (movies)
 const homePageSections = [
     {
         title: "Upcoming Movies",
@@ -28,6 +29,21 @@ const homePageSections = [
     }
 ]
 
+// home page sections (TV series)
+const tvPageSections = [
+    {
+        title: "Trending Web Series This Week",
+        path: "/trending/tv/week"
+    },
+    {
+        title: "Popular Web Series",
+        path: "/tv/popular"
+    },
+    {
+        title: "Top Rated Web Series",
+        path: "/tv/top_rated"
+    }
+]
 
 
     // fetch all genres
@@ -38,7 +54,7 @@ const homePageSections = [
                 this[genreId] && newGenreList.push(this[genreId]);
                 // this == genreList
 
-            } 
+            }
             return newGenreList.join(", ")
         }
     };
@@ -49,7 +65,6 @@ const homePageSections = [
   }
   fetchDataFromServer(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=1`, heroBanner);
  } );
-
 
 
 
@@ -93,12 +108,12 @@ const heroBanner = function({ results: movieList }){
             </h2>
             <div class="meta-list">
                 <div class="meta-items">${release_date.split("-")[0]}</div>
-                <div class="meta-item card-badge">${vote_average.toFixed(1)}</div>     
+                <div class="meta-item card-badge">${vote_average.toFixed(1)}</div>
             </div>
             <p class="genre">${genreList.asString(genre_ids)}</p>
 
             <p class="banner-text">${overview}</p>
-            
+
             <a href="./detail.html" class="btn" onclick="getMovieDetail(${id})">
                 <img src="./assets/images/play_circle.png" width="24" height="24" aria-hidden="true" alt="play circle">
                 <span class="span">Watch Now</span>
@@ -124,9 +139,14 @@ const heroBanner = function({ results: movieList }){
     addHeroSlide();
 
 
-    // fetch data for home page sections
+    // fetch data for home page movie sections
     for (const {title, path } of homePageSections){
         fetchDataFromServer(`https://api.themoviedb.org/3${path}?api_key=${api_key}&page=1`, createMovieList, title);
+    }
+
+    // fetch data for home page TV series sections
+    for (const {title, path } of tvPageSections){
+        fetchDataFromServer(`https://api.themoviedb.org/3${path}?api_key=${api_key}&page=1`, createSeriesList, title);
     }
 
 }
@@ -137,13 +157,13 @@ const heroBanner = function({ results: movieList }){
 const addHeroSlide = function (){
     const sliderItems = document.querySelectorAll("[slider-item]");
     const sliderControls = document.querySelectorAll("[slider-control]");
-    
+
     let lastSliderItem = sliderItems[0];
     let lastSliderControl = sliderControls[0];
 
     lastSliderItem.classList.add("active");
     lastSliderControl.classList.add("active")
-    
+
     const sliderStart = function(){
         lastSliderItem.classList.remove("active");
         lastSliderControl.classList.remove("active");
@@ -160,6 +180,7 @@ const addHeroSlide = function (){
 }
 
 
+// Create movie list section
 const createMovieList = function({results: movieList}, title){
     const movieListElem = document.createElement("section");
     movieListElem.classList.add("movie-list");
@@ -168,7 +189,11 @@ const createMovieList = function({results: movieList}, title){
     movieListElem.innerHTML =  `
     <div class="title-wrapper">
     <h3 class="title-large">${title}</h3>
-</div>             
+        <div class="slider-btn-group">
+            <button class="slider-arrow-btn" data-slider-btn="prev" aria-label="Previous">&#10094;</button>
+            <button class="slider-arrow-btn" data-slider-btn="next" aria-label="Next">&#10095;</button>
+        </div>
+    </div>
 
 <div class="slider-list">
     <div class="slider-inner">
@@ -183,8 +208,35 @@ const createMovieList = function({results: movieList}, title){
     }
 
     pageContent.appendChild(movieListElem);
+}
 
+// Create TV series list section
+const createSeriesList = function({results: seriesList}, title){
+    const seriesListElem = document.createElement("section");
+    seriesListElem.classList.add("movie-list");
+    seriesListElem.ariaLabel = `${title}`;
 
+    seriesListElem.innerHTML = `
+    <div class="title-wrapper">
+        <h3 class="title-large">${title}</h3>
+        <div class="slider-btn-group">
+            <button class="slider-arrow-btn" data-slider-btn="prev" aria-label="Previous">&#10094;</button>
+            <button class="slider-arrow-btn" data-slider-btn="next" aria-label="Next">&#10095;</button>
+        </div>
+    </div>
+
+    <div class="slider-list">
+        <div class="slider-inner">
+        </div>
+    </div>
+    `;
+
+    for (const series of seriesList){
+        const seriesCard = createSeriesCard(series);
+        seriesListElem.querySelector(".slider-inner").appendChild(seriesCard);
+    }
+
+    pageContent.appendChild(seriesListElem);
 }
 
 search();
